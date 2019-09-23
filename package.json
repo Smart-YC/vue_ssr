@@ -1,0 +1,36 @@
+{
+  "name": "vue_ssr",
+  "version": "1.0.0",
+  "description": "服务端渲染",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "vue": "^2.6.10",
+    "vue-server-renderer": "^2.6.10"
+  },
+  "devDependencies": {
+    "cz-conventional-changelog": "^3.0.2",
+    "vue-router": "^3.1.3"
+  },
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Smart-YC/vue_ssr.git"
+  },
+  "keywords": [
+    "vue"
+  ],
+  "author": "Smart-YC",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Smart-YC/vue_ssr/issues"
+  },
+  "homepage": "https://github.com/Smart-YC/vue_ssr#readme",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
