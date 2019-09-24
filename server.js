@@ -1,24 +1,46 @@
-// server.js
-const { createBundleRenderer } = require('vue-server-renderer')
-const server = require('express')()
-const template = require('fs').readFileSync('/path/to/template.html', 'utf-8')
-const serverBundle = require('/path/to/vue-ssr-server-bundle.json')
-const clientManifest = require('/path/to/vue-ssr-client-manifest.json')
+/* server.js */
+const exp = require('express')
+const express = exp()
+const renderer = require('vue-server-renderer').createRenderer()
+const createApp = require('./dist/bundle.server.js')['default']
 
-const renderer = createBundleRenderer(serverBundle, {
-    runInNewContext: false, // 推荐
-    template, // （可选）页面模板
-    clientManifest // （可选）客户端构建 manifest
-})
 
-// 在服务器处理函数中……
-server.get('/', (req, res) => {
+// 设置静态文件目录
+express.use('/', exp.static(__dirname + '/dist'))
+
+
+const clientBundleFileUrl = '/bundle.client.js'
+
+
+// 响应路由请求
+express.get('*', (req, res) => {
     const context = { url: req.url }
-    // 这里无需传入一个应用程序，因为在执行 bundle 时已经自动创建过。
-    // 现在我们的服务器与应用程序已经解耦！
-    renderer.renderToString(context, (err, html) => {
-        // 处理异常……
-        res.end(html)
+
+    // 创建vue实例，传入请求路由信息
+    createApp(context).then(app => {
+        renderer.renderToString(app, (err, html) => {
+            if (err) { return res.state(500).end('运行时错误') }
+            res.send(`
+                <!DOCTYPE html>
+                <html lang="en">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>Vue2.0 SSR渲染页面</title>
+                        <script src="${clientBundleFileUrl}"></script>
+                    </head>
+                    <body>
+                        <div id="app">${html}</div>
+                    </body>
+                </html>
+            `)
+        })
+    }, err => {
+        if(err.code === 404) { res.status(404).end('所请求的页面不存在') }
     })
 })
-server.listen(8082)
+
+
+// 服务器监听地址
+express.listen(8090, () => {
+    console.log('服务器已启动！')
+})
