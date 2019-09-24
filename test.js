@@ -22,7 +22,7 @@ template: `<div>Hello World</div>`
 // })
 
 const renderer =  require('vue-server-renderer').createRenderer({
-    template: require('fs').readFileSync('./index.template.html', 'utf-8')
+    template: require('fs').readFileSync('./index.html', 'utf-8')
 })
 
 renderer.renderToString(app, (err, html) => {
