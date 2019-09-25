@@ -22,12 +22,12 @@ express.get('/api/getHomeInfo', (req, res) => {
 
 // 响应路由请求
 express.get('*', (req, res) => {
-    const context = { url: req.url }
+    const context = { url: req.url, title: 'Vue-ssr初探', meta:` <meta name="viewport" content="width=device-width, initial-scale=1" /> ` }
 
     // 创建vue实例，传入请求路由信息
     createApp(context).then(app => {
         let state = JSON.stringify(context.state)
-        renderer.renderToString(app, (err, html) => {
+        renderer.renderToString(app,context, (err, html) => {
             if (err) { return res.state(500).end('运行时错误') }
             res.send(html)
         })
